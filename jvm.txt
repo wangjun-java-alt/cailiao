@@ -1,0 +1,31 @@
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-registry-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms128m -Xmx256m -jar /app/newsee-registry-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-monitor-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms128m -Xmx256m  -jar /app/newsee-monitor-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-turbine-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms128m -Xmx256m -jar /app/newsee-turbine-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-apigateway-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always   java:8 java  -Xms128m -Xmx256m -jar /app/newsee-apigateway-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-log-rest-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m -Duser.timezone=GMT+08 -jar /app/newsee-log-rest-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-fastdfs-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m -Duser.timezone=GMT+08 -jar /app/newsee-fastdfs-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-dev-platform-rest-1.0.0-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java  -Xms128m -Xmx256m -Duser.timezone=GMT+08 -jar /app/newsee-dev-platform-rest-1.0.0-SNAPSHOT.jar
+
+sudo docker run -d  --net=host  --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-bill-rest-1.0.0-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m -Duser.timezone=GMT+08 -jar /app/newsee-bill-rest-1.0.0-SNAPSHOT.jar
+
+sudo docker run -d  --net=host --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-charge-rest-1.0.0-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m -Duser.timezone=GMT+08 -jar /app/newsee-charge-rest-1.0.0-SNAPSHOT.jar
+
+sudo docker run -d  -p 12328:12328 --net=host --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-owner-rest-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m -Duser.timezone=GMT+08 -jar /app/newsee-owner-rest-0.0.1-SNAPSHOT.jar 
+
+sudo docker run -d  --net=host --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-config-0.0.1-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms128m -Xmx256m  -jar /app/newsee-config-0.0.1-SNAPSHOT.jar
+
+sudo docker run -d -p 12331:12331 --net=host --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-oauth-rest-1.0.0-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms128m -Xmx256m  -jar /app/newsee-oauth-rest-1.0.0-SNAPSHOT.jar
+
+
+sudo docker run -d  --net=host --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-soss-rest-1.0.0.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms128m -Xmx256m  -Duser.timezone=GMT+08 -jar /app/newsee-soss-rest-1.0.0.jar
+
+sudo docker run -d   --net=host --restart=always -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-system-rest-1.0.0-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m  -Duser.timezone=GMT+08   -jar /app/newsee-system-rest-1.0.0-SNAPSHOT.jar
+
+
+sudo docker run -d  --net=host --restart=always  -v  /home/data/:/app  -v /home/logs/:/logs    --name newsee-custom-form-rest-1.0.0-SNAPSHOT.jar   -v /etc/localtime:/etc/localtime  --restart=always  java:8 java -Xms256m -Xmx512m -Duser.timezone=GMT+08 -jar /app/newsee-custom-form-rest-1.0.0-SNAPSHOT.jar

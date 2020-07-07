@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS `newsee-bill` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `newsee-charge` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `newsee-oauth` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `newsee-owner` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `newsee-quartz` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `newsee-soss` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `newsee-system` default charset utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS opmp default charset utf8 COLLATE utf8_general_ci;

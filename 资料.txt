@@ -1,0 +1,43 @@
+关于NEAP4.0的一些参考材料
+一、快速开发框架
+1、Jeecg-Boot
+Jeecg-Boot 是一款基于代码生成器的JAVA快速开发平台！全新架构前后端分离：SpringBoot 2.x，Ant Design&Vue，Mybatis，Shiro，JWT。强大的代码生成器让前后端代码一键生成，无需写任何代码
+http://www.jeecg.com/#/
+
+请大家补充
+
+
+二、代码生成器
+1、auto-code
+java代码自动生成器 ,通过页面生成 单表,一对一,一对多,多对多代码.支持无限级联,支持所有关系型数据库.支持spring-boot整合
+https://gitee.com/ztp/auto-code
+
+2、mcg-helper
+mcg-helper定位一款研发辅助工具，以研发人员为中心，致力于减少、简化工作量，提供便捷实用的功能服务。基于流程图的可视化界面，结合拖拽式控件，实现纯绿色、轻量级、无浸入、跨平台、可移植、可扩展的B/S独立应用
+https://github.com/mcg-helper/mcg-helper
+https://blog.csdn.net/loginandpwd/article/list/1?orderby=UpdateTime
+
+3、 ai-code 
+代码智能化生成框架，平台化管理生产模板，模板根据需要可以上传，并在生成时自己选择，项目提供webUI方式，根据框架模块化管理，需要那些选择后自动生成；提供模板开发接口自由定义自己的模板，最终完成AI+模板=70%的代码量，平台默认携带Spring为核心的各种框架整合细节请看readme介绍。根据需要可以选择性生成，支持docker 启动 
+https://gitee.com/helixin/AI-Code
+
+4、 SpringBoot_v2
+项目是努力打造springboot框架的极致细腻的脚手架。 原生纯净，可在线生成controller、mapperxml、dao、service、hrml、sql代码，极大减少开发难度，增加开发进度神器脚手架
+https://gitee.com/bdj/SpringBoot_v2
+
+5、easy-code
+JEasy 是一款快速智能代码开发平台，面向使用Java开发的同仁们的。其关注各框架集成使用的基础代码构建过程。
+https://gitee.com/taomk/easy-code
+
+
+三、自动化 部署运维
+1、 SyncdSyncd是一款开源的代码部署工具，它具有简单、高效、易用等特点，可以提高团队的工作效率。
+https://syncd.cc/
+
+四、微服务前端框架
+
+【个推前端微服务化：突破传统SPA瓶颈 - 个人文章 - SegmentFault 思否】https://segmentfault.com/a/1190000017362827?utm_medium=referral&utm_source=tuicool&tt_from=copy_link&utm_source=copy_link&utm_medium=toutiao_ios&utm_campaign=client_share
+
+ https://mp.weixin.qq.com/s/DpFXTrQ3_kBX4EB6or4Q8Q
+
+ https://www.cnblogs.com/both-eyes/p/10836230.html

@@ -1,0 +1,96 @@
+删不掉
+grep docker /proc/*/mountinfo | grep /var/lib/docker/overlay/4f51fb9bff893d039dd7843583864e4b42cd6d5f46a27530f575d4fb0e257c26
+
+yum -y install docker-io
+   启动docker
+
+　　service docker start
+
+　　开机启动
+     systemctl enable docker
+
+　　service docker status要是出现docker dead but subsys locked执行
+
+　　rm /var/run/docker.*   
+
+　　rm /var/lock/subsys/docker
+　　rm -rf /var/lib/docker/*
+
+sudo yum install epel-release
+sudo yum install nginx
+sudo systemctl start nginx
+sudo firewall-cmd --permanent --zone=public --add-service=http 
+sudo firewall-cmd --permanent --zone=public --add-service=https 
+sudo firewall-cmd --reload
+
+sudo systemctl enable nginx
+/usr/sbin/nginx -s reload
+
+
+
+
+
+docker pull wangjun930526/rabbitmq_wangjun:test
+docker run   --name rabbitmq -p 5672:5672 -p 15672:15672 --restart=always  -d docker.io/wangjun930526/rabbitmq_wangjun:test
+firewall-cmd --zone=public --add-port=5672/tcp --permanent;firewall-cmd --reload;
+firewall-cmd --zone=public --add-port=15672/tcp --permanent;firewall-cmd --reload;
+
+
+
+docker pull wangjun930526/redis-master:testt
+mkdir -p /home/docker/redis
+wget https://raw.githubusercontent.com/antirez/redis/3.0/redis.conf -O /home/docker/redis/redis.conf
+cd /home/docker/redis/
+sed -i 's/# slaveof 192.168.1.250 6379/slaveof redis-master 6379/g' redis.conf
+docker run --name redis-master -p 6379:6379 --restart=always -d docker.io/wangjun930526/redis-master:testt
+firewall-cmd --zone=public --add-port=6379/tcp --permanent;firewall-cmd --reload;
+
+
+docker pull wangjun930526/redis-slavel:test
+docker run --link redis-master:redis-master -v /home/docker/redis/redis.conf:/home/redis.conf --restart=always --name  redis-slave -d wangjun930526/redis-slavel:test redis-server /home/redis.conf
+
+docker pull wangjun930526/fastdfs:test
+mkdir -p /home/fastdfs
+docker run --add-host fastdfs.net:127.0.0.1 --restart=always --name fastdfs1 --net=host -e TRACKER_ENABLE=1 -e NGINX_PORT=81 -v /home/fastdfs:/storage/fastdfs docker.io/wangjun930526/fastdfs:test;
+firewall-cmd --zone=public --add-port=81/tcp --permanent;firewall-cmd --reload;
+
+wangjun930526/zookeeper:test
+sudo docker run -d --name zookeeper --restart=always --publish 2181:2181 --volume /etc/localtime:/etc/localtime zookeeper:latest
+firewall-cmd --zone=public --add-port=2181/tcp --permanent;firewall-cmd --reload;
+
+
+wangjun930526/kafka:test
+sudo docker run -d --name kafka --publish 9092:9092 --restart=always  --link zookeeper --env KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 --env KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.1.75:9092 --env KAFKA_ADVERTISED_HOST_NAME=127.0.0.1 --env KAFKA_ADVERTISED_PORT=9092 --volume /etc/localtime:/etc/localtime docker.io/wurstmeister/kafka:latest
+firewall-cmd --zone=public --add-port=9092/tcp --permanent;firewall-cmd --reload;
+
+
+
+docker pull wangjun930526/mongo:test
+docker run -p 27017:27017 -v $PWD/db:/data/db --restart=always --name mongo  -d docker.io/wangjun930526/mongo:test
+firewall-cmd --zone=public --add-port=27017/tcp --permanent;firewall-cmd --reload;
+
+docker pull wangjun930526/mysql:test
+docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Newsee888 --restart=always -d docker.io/wangjun930526/mysql:test
+firewall-cmd --zone=public --add-port=3306/tcp --permanent;firewall-cmd --reload;
+
+
+sudo docker pull sebp/elk
+sudo sysctl -w vm.max_map_count=262144
+more /proc/sys/vm/max_map_count
+sudo docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk
+docker exec -it elk /bin/bash
+cd /etc/logstash/conf.d
+vim 02-beats-input.conf
+input {
+  beats {
+    port => 5044
+    client_inactivity_timeout => 36000
+  }
+firewall-cmd --zone=public --add-port=5044/tcp --permanent;firewall-cmd --reload;
+firewall-cmd --zone=public --add-port=5601/tcp --permanent;firewall-cmd --reload;
+firewall-cmd --zone=public --add-port=9200/tcp --permanent;firewall-cmd --reload;
+
+
+docker pull docker.elastic.co/beats/filebeat:5.5.1
+docker run -d  --restart=always --name=filebeat -v /var/log/command.log:/var/log/command.log:ro -v /home/logs:/home/logs -v /home/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml  docker.elastic.co/beats/filebeat:5.5.1
+

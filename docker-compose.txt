@@ -1,0 +1,55 @@
+
+## 创建镜像
+docker build -f ./newsee-registry    -t docker.io/wangjun930526/newsee-registry  .
+docker push docker.io/wangjun930526/newsee-registry
+
+docker build -f ./newsee-monitor   -t docker.io/wangjun930526/newsee-monitor .
+docker push docker.io/wangjun930526/newsee-monitor
+
+docker build -f ./newsee-turbine   -t docker.io/wangjun930526/newsee-turbine .
+docker push docker.io/wangjun930526/newsee-turbine
+
+
+docker build -f ./newsee-config   -t docker.io/wangjun930526/newsee-config .
+docker push docker.io/wangjun930526/newsee-config
+
+docker build -f ./newsee-apigateway  -t docker.io/wangjun930526/newsee-apigateway .
+docker push docker.io/wangjun930526/newsee-apigateway
+
+docker build -f ./newsee-log-rest   -t docker.io/wangjun930526/newsee-log-rest .
+docker push docker.io/wangjun930526/newsee-log-rest
+
+
+docker build -f ./newsee-fastdfs  -t docker.io/wangjun930526/newsee-fastdfs .
+docker push docker.io/wangjun930526/newsee-fastdfs
+
+docker build -f ./newsee-dev-platform-rest   -t docker.io/wangjun930526/newsee-dev-platform-rest .
+docker push docker.io/wangjun930526/newsee-dev-platform-rest
+
+docker build -f ./newsee-bill-rest   -t docker.io/wangjun930526/newsee-bill-rest .
+docker push docker.io/wangjun930526/newsee-bill-rest
+
+docker build -f ./newsee-oauth-rest   -t docker.io/wangjun930526/newsee-oauth-rest .
+docker push docker.io/wangjun930526/newsee-oauth-rest
+
+docker build -f ./newsee-soss-rest   -t docker.io/wangjun930526/newsee-soss-rest .
+docker push docker.io/wangjun930526/newsee-soss-rest
+
+docker build -f ./newsee-system-rest   -t docker.io/wangjun930526/newsee-system-rest .
+docker push docker.io/wangjun930526/newsee-system-rest
+
+docker build -f ./newsee-custom-form-rest   -t docker.io/wangjun930526/newsee-custom-form-rest .
+docker push docker.io/wangjun930526/newsee-custom-form-rest
+
+docker build -f ./newsee-charge-rest   -t docker.io/wangjun930526/newsee-charge-rest .
+docker push docker.io/wangjun930526/newsee-charge-rest
+
+
+docker build -f ./newsee-owner-rest   -t docker.io/wangjun930526/newsee-owner-rest .
+docker push docker.io/wangjun930526/newsee-owner-rest
+
+
+##拉取镜像部署
+docker-compose -f newsee-config.yml pull newsee-config 
+docker-compose -f newsee-config.yml up -d --no-deps --force-recreate --build newsee-config
+
