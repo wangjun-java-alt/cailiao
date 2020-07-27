@@ -1,0 +1,166 @@
+-- 查询产生锁的SQL
+SELECT 'KILL',
+SPID = er.session_id
+,STATUS = ses.STATUS
+,[LOGIN] = ses.login_name
+,HOST = ses.host_name
+,BlkBy = er.blocking_session_id
+,Kill_SQL = case when er_blocker.blocking_session_id = 0 then 'kill ' + convert(varchar(10),er_blocker.session_id ) else '' end
+,DBName = DB_NAME(er.database_id)
+,CommandType = er.command
+,SQLStatement = st.text,
+t.text
+,ObjectName = OBJECT_NAME(st.objectid)
+,ElapsedMS = er.total_elapsed_time
+,CPUTime = er.cpu_time
+,IOReads = er.logical_reads + er.reads
+,IOWrites = er.writes
+,LastWaitType = er.last_wait_type
+,StartTime = er.start_time
+,Protocol = con.net_transport
+,ConnectionWrites = con.num_writes
+,ConnectionReads = con.num_reads
+,ClientAddress = con.client_net_address
+,Authentication = con.auth_scheme
+FROM sys.dm_exec_requests er
+OUTER APPLY sys.dm_exec_sql_text(er.sql_handle) st
+outer apply sys.dm_exec_cursors (er.session_id) c
+outer APPLY sys.dm_exec_sql_text (c.sql_handle) t
+LEFT JOIN sys.dm_exec_sessions ses ON ses.session_id = er.session_id
+LEFT JOIN sys.dm_exec_connections con ON con.session_id = ses.session_id
+LEFT JOIN sys.dm_exec_requests er_blocker on er.blocking_session_id = er_blocker.session_id
+WHERE er.session_id > 0 and ses.host_name is not null
+and er.session_id In(
+select er.blocking_session_id
+FROM sys.dm_exec_requests er
+OUTER APPLY sys.dm_exec_sql_text(er.sql_handle) st
+outer apply sys.dm_exec_cursors (er.session_id) c
+outer APPLY sys.dm_exec_sql_text (c.sql_handle) t
+LEFT JOIN sys.dm_exec_sessions ses ON ses.session_id = er.session_id
+LEFT JOIN sys.dm_exec_connections con ON con.session_id = ses.session_id
+LEFT JOIN sys.dm_exec_requests er_blocker on er.blocking_session_id = er_blocker.session_id
+WHERE er.session_id > 0 and ses.host_name is not null
+and er.blocking_session_id>0
+)
+ORDER BY st.text, er.blocking_session_id,er.total_elapsed_time desc
+
+
+-- 当前执行中的SQL
+
+SELECT 'KILL',
+SPID = er.session_id
+,STATUS = ses.STATUS
+,[LOGIN] = ses.login_name
+,HOST = ses.host_name
+,BlkBy = er.blocking_session_id
+,Kill_SQL = case when er_blocker.blocking_session_id = 0 then 'kill ' + convert(varchar(10),er_blocker.session_id ) else '' end
+,DBName = DB_NAME(er.database_id)
+,CommandType = er.command
+,SQLStatement = st.text,
+t.text
+,ObjectName = OBJECT_NAME(st.objectid)
+,ElapsedMS = er.total_elapsed_time
+,CPUTime = er.cpu_time
+,IOReads = er.logical_reads + er.reads
+,IOWrites = er.writes
+,LastWaitType = er.last_wait_type
+,StartTime = er.start_time
+,Protocol = con.net_transport
+,ConnectionWrites = con.num_writes
+,ConnectionReads = con.num_reads
+,ClientAddress = con.client_net_address
+,Authentication = con.auth_scheme
+FROM sys.dm_exec_requests er
+OUTER APPLY sys.dm_exec_sql_text(er.sql_handle) st
+outer apply sys.dm_exec_cursors (er.session_id) c
+outer APPLY sys.dm_exec_sql_text (c.sql_handle) t
+LEFT JOIN sys.dm_exec_sessions ses ON ses.session_id = er.session_id
+LEFT JOIN sys.dm_exec_connections con ON con.session_id = ses.session_id
+LEFT JOIN sys.dm_exec_requests er_blocker on er.blocking_session_id = er_blocker.session_id
+WHERE er.session_id > 0 and ses.host_name is not null
+ORDER BY st.text, er.blocking_session_id,er.total_elapsed_time desc
+
+
+
+1，造成高CPU的语句已经执行结束，这个时候可以用下面的语句来检查。
+select  
+     highest_cpu_queries.plan_handle,  
+     highest_cpu_queries.total_worker_time,
+     q.dbid,
+     q.objectid,
+     q.number,
+     q.encrypted,
+     q.[text]
+from  
+     (select top 50  
+         qs.plan_handle,  
+         qs.total_worker_time
+     from  
+         sys.dm_exec_query_stats qs
+     order by qs.total_worker_time desc) as highest_cpu_queries
+     cross apply sys.dm_exec_sql_text(plan_handle) as q
+order by highest_cpu_queries.total_worker_time desc
+
+
+
+3.1.2，造成高CPU的语句正在运行，这个时候可以用下面的语句来检查。
+SELECT  st.text, qp.query_plan, rq.*
+FROM sys.dm_exec_requests RQ CROSS APPLY sys.dm_exec_sql_text(rq.sql_handle) as st
+CROSS APPLY sys.dm_exec_query_plan(rq.plan_handle) as qp order by RQ.CPU_time desc
+
+
+
+--索引碎片查询与重建
+SELECT 'Declare @sql varchar(max) ' [重建语句],0 [碎片情况]
+UNION ALL
+SELECT 'select @sql='' ALTER INDEX [' + ix.name + '] ON [' + s.name + '].[' + t.name + '] ' +
+       CASE    
+              WHEN ps.avg_fragmentation_in_percent > 15 
+              THEN 'REBUILD'
+              ELSE 'REORGANIZE'
+        END + 
+        CASE
+              WHEN pc.partition_count > 1 
+              THEN ' PARTITION = ' + CAST(ps.partition_number AS nvarchar(MAX)) 
+              ELSE ''
+        END+ ' with(online=on)              
+              '+'''
+              print @sql
+              exec(@sql)
+              ' as [重建语句], 
+        avg_fragmentation_in_percent as [碎片情况]
+FROM    sys.indexes AS ix 
+        INNER JOIN sys.tables t 
+        ON     t.object_id = ix.object_id 
+        INNER JOIN sys.schemas s 
+        ON     t.schema_id = s.schema_id 
+        INNER JOIN
+              (SELECT object_id                   , 
+                      index_id                    , 
+                       avg_fragmentation_in_percent, 
+                      partition_number 
+              FROM  sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, NULL) 
+                       where avg_fragmentation_in_percent > 30 
+              ) ps 
+        ON     t.object_id = ps.object_id 
+           AND ix.index_id = ps.index_id 
+        INNER JOIN
+              (SELECT  object_id, 
+                       index_id , 
+                       COUNT(DISTINCT partition_number) AS partition_count 
+              FROM     sys.partitions 
+              GROUP BY object_id, 
+                       index_id 
+              ) pc 
+        ON     t.object_id              = pc.object_id 
+           AND ix.index_id              = pc.index_id 
+WHERE   ps.avg_fragmentation_in_percent > 30 
+    AND ix.name IS NOT NULL
+       order by [碎片情况]  desc
+
+
+
+执行完成拷贝第 1行[重建语句]中超过50%的单独执行进行索引重建
+
+
+
